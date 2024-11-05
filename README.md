@@ -1,5 +1,5 @@
 
-# 安装PYRFC步骤
+# 首先安装PYRFC：
 官方文档：https://github.com/sap/pyrfc/
 
 ##  安装 NWRFC SDK 
@@ -14,3 +14,6 @@
 ## 安装 pyrfc 
 1. pip install pyrfc  直接安装 pyrfc
 2. 或者：https://github.com/SAP/PyRFC/tags ,下载对应的 whl版本，然后  pip install pyrfc-XXX-XXX-win_AMD64.whl 安装
+
+# 安装azsaprfc
+pip install azsaprfc
