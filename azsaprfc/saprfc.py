@@ -57,7 +57,7 @@ def convertPythonTypeToAbap(python_value):
             return ('c', python_value)
     except Exception as e :
         return ('c', python_value)
-
+    
 @dataclass(frozen=True)
 class ServerParameters:
     hostname:str
@@ -68,7 +68,9 @@ class ServerParameters:
     language:str 
     router:str 
     
-          
+
+    
+                  
 class SapServer:
     '''SAP RFC 连接服务器的相关基类'''
     # 连接参数样例
@@ -619,14 +621,18 @@ class SapServer:
             return resultList
         
     def getFunctionParameterType(self,imFunctionName,imParameter):
-        resultDict={}
+        # resultDict={}
+        resultDict={
+                        'para_name':imParameter,
+                        'type_name':'',
+                        'fields':None
+                    }
         resultFieldList = []
         try:
             self.connect() 
             func_desc = self.sapObject.get_function_description(imFunctionName)
             for parameter in func_desc.parameters:
                 if parameter.get("name") == imParameter and parameter["type_description"] != None:
-                    
                     for itm in parameter["type_description"].fields:
                         # print(itm)
                         fields ={
@@ -696,9 +702,10 @@ class SapServer:
     
     def printFunctionParameterType(self,imFunctionName,imParameter):
         resultList = self.getFunctionParameterType(imFunctionName,imParameter)
-        print(resultList['type_name'])
-        for result in resultList['fields']:
-            print(result)    
+        if resultList['fields'] !=None:
+            print(resultList['type_name'])
+            for result in resultList['fields']:
+                print(result)    
    
     def printFunctionParameters(self,imFunctionName):
         resultList = self.getFunctionJsonParameters(imFunctionName)
