@@ -2,9 +2,61 @@ import json
 import os
 import re
 import pyrfc
-import sys
+# import sys
 import pandas
-from dataclasses import dataclass,field,asdict
+import datetime
+from dataclasses import dataclass #,field,asdict
+
+def convertAbapTypeToPython(abap_value,abap_Type='C'):
+    try:
+        abap_type =  abap_Type.upper()
+        if abap_type == 'I' :  # 整型
+            return int(abap_value)
+        elif abap_type == 'F':  # 浮点型
+            return float(abap_value)
+        elif abap_type == 'P':  # 浮点型
+            return float(abap_value)
+        elif abap_type in ['C', 'STRING']:  # 字符串类型
+            return str(abap_value)
+        elif abap_type == 'D':  # 日期类型
+            year = int(abap_value[:4])
+            month = int(abap_value[4:6])
+            day = int(abap_value[6:8])
+            return datetime.date(year, month, day)
+        elif abap_type == 'T':  # 时间类型
+            hour = int(abap_value[:2])
+            minute = int(abap_value[2:4])
+            second = int(abap_value[4:6])
+            return datetime.time(hour, minute, second)
+        elif abap_type == 'N':  # 数字串类型
+            if '.' in abap_value:
+                return float(abap_value)
+            else:
+                return int(abap_value)
+        else:
+            return abap_value
+    except Exception as e:
+        return abap_value
+    
+
+def convertPythonTypeToAbap(python_value):
+    try:
+        if isinstance(python_value, int):  # 整型
+            return ('i', str(python_value))
+        elif isinstance(python_value, float):  # 浮点型
+            return ('f', str(python_value))
+        elif isinstance(python_value, str):  # 字符串类型
+            return ('c', python_value)
+        elif isinstance(python_value, datetime.date):  # 日期类型
+            return ('d', python_value.strftime('%Y%m%d'))
+        elif isinstance(python_value, datetime.time):  # 时间类型
+            return ('t', python_value.strftime('%H%M%S'))
+        elif isinstance(python_value, datetime.datetime):  # 时间戳类型
+            return ('t', python_value.strftime('%H%M%S'))
+        else:
+            return ('c', python_value)
+    except Exception as e :
+        return ('c', python_value)
 
 @dataclass(frozen=True)
 class ServerParameters:
